@@ -1,0 +1,202 @@
+/* 約拿落海 —— 風暴大海 UI(照 waterpolo3d/baseball3d styles.css 範式) */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ★hidden 屬性要壓過下面 .flood-panel/.storm-panel 等的 display:flex(作者樣式會蓋掉 UA 的 [hidden]) */
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  background: #060d16;
+  color: #eef2f8;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.app-shell { position: fixed; inset: 0; }
+#gameCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* 頂部:階段 + 撐過風暴 */
+.topbar {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 20px; border-radius: 16px;
+  background: rgba(8, 14, 26, 0.78);
+  border: 1px solid rgba(111, 208, 224, 0.4);
+  z-index: 20;
+}
+.phase-label { font-size: 17px; font-weight: 800; color: #8fe0ee; letter-spacing: 0.06em; }
+.storm-panel { display: flex; align-items: center; gap: 8px; }
+.storm-cap { font-size: 12px; opacity: 0.8; }
+.storm-track { width: min(38vw, 240px); height: 12px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden; }
+.storm-fill {
+  height: 100%; width: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #6fd0e0, #8fd6ff);
+  transform: scaleX(0); transform-origin: left center;
+}
+
+/* 進水表(3d-figure-kit 鐵則:中下方、粗、由左到右亮起,投影可讀) */
+.flood-panel {
+  position: absolute; left: 50%; bottom: 108px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; border-radius: 18px;
+  background: rgba(8, 14, 26, 0.82);
+  border: 2px solid rgba(125, 200, 255, 0.55);
+  z-index: 22;
+}
+#floodLabel { font-size: 16px; font-weight: 800; color: #8ecdff; white-space: nowrap; }
+.flood-track { width: min(46vw, 340px); height: 20px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden; }
+.flood-fill {
+  height: 100%; width: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #4a90d9, #6fd0e0, #ffd24a);
+  transform: scaleX(0); transform-origin: left center;
+  transition: background 0.2s;
+}
+.flood-fill[data-high="1"] { background: linear-gradient(90deg, #ffb04a, #ff7a18, #ff4a3a); }
+
+/* 穩舵指示 */
+.trim-panel {
+  position: absolute; left: 50%; bottom: 150px; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 14px; border-radius: 14px;
+  background: rgba(8, 14, 26, 0.7); z-index: 21;
+}
+.trim-cap { font-size: 12px; opacity: 0.8; }
+.trim-track { position: relative; width: min(40vw, 280px); height: 8px; border-radius: 999px; background: rgba(255,255,255,0.16); }
+.trim-track::before { content: ""; position: absolute; left: 50%; top: -3px; width: 2px; height: 14px; background: rgba(255,255,255,0.4); }
+.trim-dot { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; border-radius: 50%; background: #8fe0ee; transform: translate(-50%, -50%); box-shadow: 0 0 8px rgba(143,224,238,0.8); }
+
+/* 操作提示 */
+.controls-panel {
+  position: absolute; right: 14px; bottom: 96px; max-width: 340px;
+  padding: 10px 14px; border-radius: 14px;
+  background: rgba(8, 14, 26, 0.78);
+  border: 1px solid rgba(111, 208, 224, 0.3);
+  z-index: 20; font-size: 13px; line-height: 1.6;
+}
+
+/* 訊息帶 + 播報 */
+.message-ribbon {
+  position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%);
+  max-width: min(90vw, 680px); padding: 6px 16px; border-radius: 999px;
+  background: rgba(8, 14, 26, 0.7); font-size: 14px; z-index: 20; text-align: center;
+}
+/* ★commentary-bar top=96(桌機)/88(手機):運動系列播報壓線批次的正解值,本聖經皮從一開始就對 */
+.commentary-bar {
+  position: fixed; left: 50%; top: 96px; transform: translateX(-50%);
+  max-width: min(88vw, 680px); padding: 8px 18px; border-radius: 999px;
+  background: rgba(8, 12, 22, 0.88); border: 1px solid #6fd0e0;
+  color: #f5f8ff; font-size: 17px; font-weight: 700; letter-spacing: 0.03em;
+  text-align: center; pointer-events: none; z-index: 40;
+  animation: commentary-pop 4.2s ease forwards;
+}
+.commentary-bar[data-tone="hot"] { border-color: #ffd24a; color: #fff2cf; }
+.commentary-bar[data-tone="cool"] { border-color: #8fb4ff; color: #d7e4ff; }
+@keyframes commentary-pop {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.94); }
+  6% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.02); }
+  12% { transform: translateX(-50%) scale(1); }
+  84% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 劇情按鍵提示(拋約拿下海) */
+.action-prompt {
+  position: fixed; left: 50%; bottom: 40%; transform: translateX(-50%);
+  padding: 16px 34px; border-radius: 999px; border: 2px solid #ffd24a;
+  background: rgba(20, 12, 6, 0.9); color: #ffe9a8; font-size: 20px; font-weight: 800;
+  cursor: pointer; z-index: 45; letter-spacing: 0.04em;
+  box-shadow: 0 0 24px rgba(255, 210, 74, 0.4);
+  animation: prompt-pulse 1.3s ease infinite;
+}
+@keyframes prompt-pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.06); } }
+
+/* 觸控按鈕 */
+.touch-controls { position: absolute; right: 18px; bottom: 14px; display: flex; gap: 12px; z-index: 25; }
+.touch-action {
+  min-width: 104px; padding: 14px 20px; border-radius: 999px; border: 2px solid #6fd0e0;
+  background: rgba(111, 208, 224, 0.16); color: #c7f2f8; font-size: 18px; font-weight: 800;
+  cursor: pointer; touch-action: none;
+}
+.touch-action.alt { border-color: #8fb4ff; color: #d7e4ff; background: rgba(125, 180, 255, 0.14); min-width: 84px; font-size: 16px; }
+.touch-action:active { transform: scale(0.96); }
+
+.hud-buttons { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; z-index: 25; }
+.hud-buttons button {
+  padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(8, 14, 26, 0.7); color: #eef2f8; font-size: 13px; cursor: pointer;
+}
+
+/* 結算 overlay */
+.overlay-shell {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(4, 8, 16, 0.78); z-index: 60;
+}
+.overlay-shell.visible { display: flex; }
+.overlay-card {
+  width: min(90vw, 500px); padding: 28px 26px; border-radius: 20px; text-align: center;
+  background: #0c1626; border: 2px solid #6fd0e0;
+}
+.overlay-eyebrow { font-size: 12px; letter-spacing: 0.2em; opacity: 0.7; }
+.overlay-card h2 { font-size: 26px; margin: 10px 0; color: #8fe0ee; }
+.overlay-card p { font-size: 15px; line-height: 1.8; opacity: 0.92; white-space: pre-line; text-align: left; }
+.overlay-actions { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+.overlay-actions button {
+  padding: 10px 22px; border-radius: 12px; border: none; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+#overlayReplayButton { background: #6fd0e0; color: #062028; }
+#overlayMenuButton { background: rgba(255, 255, 255, 0.14); color: #eef2f8; }
+
+/* 主選單 */
+.home-screen {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 18%, #123246 0%, #060d16 72%);
+  z-index: 70; overflow: auto;
+}
+.home-screen.visible { display: flex; }
+.home-card { width: min(92vw, 600px); padding: 30px 28px; text-align: center; }
+.home-eyebrow { font-size: 12px; letter-spacing: 0.24em; color: #6fd0e0; opacity: 0.85; }
+.home-card h1 { font-size: 44px; margin: 8px 0 4px; letter-spacing: 0.05em; }
+.home-sub { font-size: 15px; opacity: 0.82; margin-bottom: 22px; line-height: 1.7; }
+.home-row { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+.home-row label { font-size: 14px; opacity: 0.8; }
+/* ★鐵則:select 深底亮字+color-scheme:dark(Windows 系統展開選單白底防隱形) */
+.home-row select {
+  padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #0c1626; color: #eef2f8; font-size: 14px; color-scheme: dark;
+}
+select { color-scheme: dark; }
+select option { background: #0c1626; color: #eef2f8; }
+.home-hint { font-size: 13px; opacity: 0.72; line-height: 1.8; margin-bottom: 20px; }
+.start-button {
+  padding: 14px 52px; border-radius: 999px; border: none; font-size: 20px; font-weight: 800;
+  background: #6fd0e0; color: #062028; cursor: pointer;
+}
+.start-button:active { transform: scale(0.97); }
+
+/* 直向轉橫提示 */
+.rotate-hint {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(4, 8, 16, 0.9); z-index: 90; pointer-events: none;
+}
+.rotate-card {
+  text-align: center; padding: 26px 30px; border-radius: 20px;
+  background: #0c1626; border: 2px solid #8fb4ff; max-width: 78vw;
+}
+.rotate-icon { font-size: 44px; margin-bottom: 10px; }
+.rotate-card p { font-size: 16px; line-height: 1.7; }
+.rotate-card strong { color: #8ecdff; }
+@media (orientation: portrait) and (max-width: 720px) {
+  .rotate-hint { display: flex; }
+}
+
+@media (max-width: 720px) {
+  .controls-panel { display: none; }
+  .commentary-bar { top: 88px; font-size: 14px; }
+  .phase-label { font-size: 15px; }
+  .storm-track { width: 32vw; }
+  .flood-panel { bottom: 128px; padding: 10px 14px; }
+  .flood-track { width: 42vw; height: 16px; }
+  .trim-panel { bottom: 172px; }
+  .touch-action { min-width: 84px; padding: 12px 14px; font-size: 16px; }
+  .touch-action.alt { min-width: 68px; font-size: 14px; }
+  .action-prompt { font-size: 17px; padding: 14px 24px; }
+}

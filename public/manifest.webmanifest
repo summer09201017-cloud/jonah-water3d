@@ -1,0 +1,24 @@
+{
+  "name": "約拿落海 Jonah Overboard 3D",
+  "short_name": "約拿落海",
+  "description": "約拿書 1 的 3D 聖經遊戲——撐過狂風大浪、掣籤、認罪、拋入海中,海就平靜了;神卻安排一條大魚。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1420",
+  "theme_color": "#0a1420",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

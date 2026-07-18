@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a1420" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B3%3C/text%3E%3C/svg%3E" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>約拿落海 Jonah Overboard 3D</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <canvas id="gameCanvas" aria-label="約拿落海 3D 遊戲畫面"></canvas>
+
+      <!-- 頂部:階段 + 撐過風暴進度 -->
+      <header class="topbar">
+        <span id="phaseLabel" class="phase-label">風暴</span>
+        <div class="storm-panel" id="stormPanel" hidden>
+          <span class="storm-cap">撐過風暴</span>
+          <div class="storm-track"><div class="storm-fill" id="stormFill"></div></div>
+        </div>
+      </header>
+
+      <!-- 進水表(中下方大力道條) -->
+      <div class="flood-panel" id="floodPanel" hidden>
+        <span id="floodLabel">船艙進水</span>
+        <div class="flood-track"><div class="flood-fill" id="floodFill"></div></div>
+      </div>
+
+      <!-- 穩舵指示(船身配重) -->
+      <div class="trim-panel" id="trimPanel" hidden>
+        <span class="trim-cap">◀ 穩舵 ▶</span>
+        <div class="trim-track"><div class="trim-dot" id="trimDot"></div></div>
+      </div>
+
+      <div class="message-ribbon" id="statusMessage">選擇難度後開始。</div>
+      <div class="commentary-bar" id="commentaryBar" hidden></div>
+
+      <!-- 劇情按鍵提示(拋約拿下海) -->
+      <button class="action-prompt" id="actionPrompt" hidden>▶</button>
+
+      <!-- 操作提示 -->
+      <div class="controls-panel" id="controlsPanel" hidden>
+        <div id="controlsHint">A/D 或 ←/→ 穩舵 ・ 空白鍵按住舀水 ・ V 視角 ・ 出現提示時 Enter/點按 推進劇情</div>
+      </div>
+
+      <!-- 觸控(按住式) -->
+      <div class="touch-controls" id="touchControls">
+        <button id="touchLeft" class="touch-action alt">◀ 舵</button>
+        <button id="touchRight" class="touch-action alt">舵 ▶</button>
+        <button id="touchBail" class="touch-action">舀水</button>
+      </div>
+
+      <div class="hud-buttons">
+        <button id="menuButton">選單</button>
+        <button id="audioButton">音效開啟</button>
+        <button id="cameraButton">視角</button>
+        <button id="fullscreenButton" title="全螢幕">⛶ 全螢幕</button>
+      </div>
+
+      <!-- 直向轉橫提示 -->
+      <div class="rotate-hint" id="rotateHint">
+        <div class="rotate-card">
+          <div class="rotate-icon">📱↻</div>
+          <p>請把裝置轉成<strong>橫向</strong>再玩,大海才裝得下!</p>
+        </div>
+      </div>
+
+      <!-- 結算/反思 -->
+      <div class="overlay-shell" id="matchOverlay">
+        <div class="overlay-card">
+          <p class="overlay-eyebrow" id="overlayEyebrow">約拿書 1:17</p>
+          <h2 id="overlayTitle">—</h2>
+          <p id="overlayText">—</p>
+          <div class="overlay-actions">
+            <button id="overlayMenuButton">回選單</button>
+            <button id="overlayReplayButton">再玩一次</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主選單 -->
+      <div class="home-screen visible" id="homeScreen">
+        <div class="home-card">
+          <p class="home-eyebrow">約拿書 1・逃避神的先知</p>
+          <h1>約拿落海</h1>
+          <p class="home-sub">耶和華使海中起大風。撐過狂浪、掣籤、認罪、拋入海中——海就平靜了;神卻安排一條大魚。</p>
+
+          <div class="home-row">
+            <label for="difficultySelect">難度</label>
+            <select id="difficultySelect">
+              <option value="kids">幼兒（超簡單）</option>
+              <option value="child">兒童（簡單）</option>
+              <option value="easy" selected>入門</option>
+              <option value="normal">標準</option>
+              <option value="hard">職業</option>
+            </select>
+            <label for="audioSelect">音效</label>
+            <select id="audioSelect">
+              <option value="on" selected>開啟</option>
+              <option value="off">靜音</option>
+            </select>
+          </div>
+
+          <p class="home-hint" id="modeHint">A/D 或 ←/→ 左右穩舵、空白鍵按住舀水,撐過越來越猛的風暴。水手掣籤掣出約拿,照約拿的話把他拋入海中——海的狂浪就平息了(拿1:15)。這是一段可以慢慢體會的聖經故事,永遠不會輸。</p>
+          <button class="start-button" id="startButton">開始</button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+    try {
+      if (location.hostname.endsWith('netlify.app')) {
+        navigator.sendBeacon?.('https://hfpc-play-stats.summer09201017.workers.dev/api/ping?g=jonah-water3d');
+      }
+    } catch (_) {}
+    </script>
+  </body>
+</html>

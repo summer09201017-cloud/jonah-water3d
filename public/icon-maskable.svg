@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#0a1420"/>
+  <!-- 內容集中在安全區(中央 ~64%),四周留白給 maskable 裁切 -->
+  <path d="M24 84 Q44 76 58 83 T92 82 T104 82 V104 H24 Z" fill="#1f5e96"/>
+  <g fill="#0f2a3a">
+    <ellipse cx="62" cy="78" rx="22" ry="11"/>
+    <path d="M84 78 l13 -9 v18 Z"/>
+  </g>
+  <circle cx="48" cy="75" r="2.6" fill="#dff0ff"/>
+  <circle cx="48" cy="75" r="1.2" fill="#0a1420"/>
+</svg>
